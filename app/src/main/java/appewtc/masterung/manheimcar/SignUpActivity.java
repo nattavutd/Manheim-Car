@@ -5,9 +5,9 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -16,11 +16,11 @@ import android.widget.ImageView;
 
 public class SignUpActivity extends AppCompatActivity {
 
-    //explicit
+    //Explicit
     private EditText nameEditText, userEditText, passwordEditText;
     private ImageView imageView;
     private Button button;
-    private String nameString, userString, passString, imageString,
+    private String nameString, userString, passwordString, imageString,
             imagePathString, imageNameString;
     private Uri uri;
     private boolean aBoolean = true;
@@ -33,63 +33,68 @@ public class SignUpActivity extends AppCompatActivity {
         setContentView(R.layout.activity_sign_up);
 
         //Bind Widget
-        nameEditText = (EditText) findViewById(R.id.editText3);
+        nameEditText = (EditText) findViewById(R.id.editText);
         userEditText = (EditText) findViewById(R.id.editText2);
-        passwordEditText = (EditText) findViewById(R.id.editText);
+        passwordEditText = (EditText) findViewById(R.id.editText3);
         imageView = (ImageView) findViewById(R.id.imageView);
         button = (Button) findViewById(R.id.button3);
 
         //button Controller
         button.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
 
                 //Get Value From Edit Text
                 nameString = nameEditText.getText().toString().trim();
                 userString = userEditText.getText().toString().trim();
-                passString = passwordEditText.getText().toString().trim();
+                passwordString = passwordEditText.getText().toString().trim();
 
-                //check space
-                if (nameString.equals("") || userString.equals("") || passString.equals("") ) {
-                    //have space
+                //Check Space
+                if (nameString.equals("") ||
+                        userString.equals("") ||
+                        passwordString.equals("")) {
+                    // Have Space
                     MyAlert myAlert = new MyAlert(SignUpActivity.this,
-                            R.drawable.bird48, "มีช่องว่าง", "กรุณากรอกทุกช่อง");
+                            R.drawable.bird48, "มีช่องว่าง", "กรุณากรอกทุกช่อง คะ");
                     myAlert.myDialog();
                 } else if (aBoolean) {
                     // Non Choose Image
                     MyAlert myAlert = new MyAlert(SignUpActivity.this,
-                            R.drawable.doremon48,
-                            "ยังไม่ได้เลือกรูปภาพ",
-                            "กรุณาเกลือกรูปภาพด้วยค่ะ");
+                            R.drawable.doremon48, "ยังไม่ได้เลือกรูปภาพ",
+                            "กรุณาเลือกรูปภาพด้วยคะ");
                     myAlert.myDialog();
                 } else {
-                    // Choose Image Finish
+                    // Choose Image finish
 
                 }
 
-            }  //onClick
+            }   // onClick
         });
-            //Image Controller
-            imageView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
 
-                    Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                    intent.setType("image/*");
-                    startActivityForResult(Intent.createChooser(intent, "โปรดเลือกรูปภาพ"), 1);
 
-                }  //On Click
-            });
+        //Image Controller
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
 
-    } //Main Method
+                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                intent.setType("image/*");
+                startActivityForResult(Intent.createChooser(intent, "โปรเลือกรูปภาพ"), 1);
+
+
+            }   // onClick
+        });
+
+
+    }   // Main Method
 
     @Override
     protected void onActivityResult(int requestCode,
                                     int resultCode,
                                     Intent data) {
-
         super.onActivityResult(requestCode, resultCode, data);
-        if ((requestCode == 1)&&(resultCode == RESULT_OK)) {
+
+        if ((requestCode == 1) && (resultCode == RESULT_OK)) {
 
             Log.d("23octV1", "Result OK");
 
@@ -104,18 +109,21 @@ public class SignUpActivity extends AppCompatActivity {
                         .decodeStream(getContentResolver()
                                 .openInputStream(uri));
                 imageView.setImageBitmap(bitmap);
+
             } catch (Exception e) {
                 e.printStackTrace();
-            }   //try
-            //  Find Path and Name Image
+            }   // try
+
+            //Find Path and Name Image
             imagePathString = myFindPath(uri);
-            Log.d("23octV1", "imagePathString ++>" + imagePathString);
-        }   //If
+            Log.d("23octV1", "imagePathString ==> " + imagePathString);
 
-        imageNameString = imagePathString.substring(imagePathString.lastIndexOf("/"));
-        Log.d("23octV1", "imageString ==>" + imageNameString);
+            imageNameString = imagePathString.substring(imagePathString.lastIndexOf("/"));
+            Log.d("23octV1", "imageNameString ==> " + imageNameString);
 
-    }   //OnActivityResult
+        }   // if
+
+    }   // onActivityResult
 
     private String myFindPath(Uri uri) {
 
@@ -135,10 +143,5 @@ public class SignUpActivity extends AppCompatActivity {
 
         return result;
     }
-}   //Main Class
 
-
-
-
-
-
+}   // Main Class
