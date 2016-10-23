@@ -1,9 +1,11 @@
 package appewtc.masterung.manheimcar;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,8 +20,10 @@ public class SignUpActivity extends AppCompatActivity {
     private EditText nameEditText, userEditText, passwordEditText;
     private ImageView imageView;
     private Button button;
-    private String nameString, userString, passString, imagString;
+    private String nameString, userString, passString, imageString,
+            imagePathString, imageNameString;
     private Uri uri;
+    private boolean aBoolean = true;
 
 
 
@@ -51,6 +55,16 @@ public class SignUpActivity extends AppCompatActivity {
                     MyAlert myAlert = new MyAlert(SignUpActivity.this,
                             R.drawable.bird48, "มีช่องว่าง", "กรุณากรอกทุกช่อง");
                     myAlert.myDialog();
+                } else if (aBoolean) {
+                    // Non Choose Image
+                    MyAlert myAlert = new MyAlert(SignUpActivity.this,
+                            R.drawable.doremon48,
+                            "ยังไม่ได้เลือกรูปภาพ",
+                            "กรุณาเกลือกรูปภาพด้วยค่ะ");
+                    myAlert.myDialog();
+                } else {
+                    // Choose Image Finish
+
                 }
 
             }  //onClick
@@ -79,6 +93,8 @@ public class SignUpActivity extends AppCompatActivity {
 
             Log.d("23octV1", "Result OK");
 
+            aBoolean = false;
+
             //Setup Image
             uri = data.getData();
 
@@ -86,17 +102,39 @@ public class SignUpActivity extends AppCompatActivity {
 
                 Bitmap bitmap = BitmapFactory
                         .decodeStream(getContentResolver()
-                                .openInputStream(Uri));
+                                .openInputStream(uri));
                 imageView.setImageBitmap(bitmap);
             } catch (Exception e) {
                 e.printStackTrace();
             }   //try
-
+            //  Find Path and Name Image
+            imagePathString = myFindPath(uri);
+            Log.d("23octV1", "imagePathString ++>" + imagePathString);
         }   //If
 
-
+        imageNameString = imagePathString.substring(imagePathString.lastIndexOf("/"));
+        Log.d("23octV1", "imageString ==>" + imageNameString);
 
     }   //OnActivityResult
+
+    private String myFindPath(Uri uri) {
+
+        String result = null;
+        String[] strings = {MediaStore.Images.Media.DATA};
+        Cursor cursor = getContentResolver().query(uri, strings, null, null, null);
+
+        if (cursor != null) {
+
+            cursor.moveToFirst();
+            int i = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            result = cursor.getString(i);
+
+        } else {
+            result = uri.getPath();
+        }
+
+        return result;
+    }
 }   //Main Class
 
 
