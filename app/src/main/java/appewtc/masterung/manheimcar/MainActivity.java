@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
@@ -200,6 +201,17 @@ public class MainActivity extends AppCompatActivity {
                             titleString, messageString);
                     myAlert.myDialog();
 
+                } else if (passwordString.equals(truepasswordString)) {
+                    //Password True
+                    Toast.makeText(context, "Welcome", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(MainActivity.this, ListService.class);
+                    startActivity(intent);
+                    finish();
+
+                } else {
+                    //Password False
+                    MyAlert myAlert = new MyAlert(context, R.drawable.doremon48, "Wrong Password", "Please Try Again");
+                    myAlert.myDialog();
                 }
 
             } catch (Exception e) {
