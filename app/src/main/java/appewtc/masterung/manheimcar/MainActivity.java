@@ -1,11 +1,18 @@
 package appewtc.masterung.manheimcar;
 
+import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -13,8 +20,6 @@ public class MainActivity extends AppCompatActivity {
     private Button singInButton, singUpButton;
     private EditText userEditText, passwordEditText;
     private String userString, passwordString;
-
-
 
 
     @Override
@@ -52,6 +57,14 @@ public class MainActivity extends AppCompatActivity {
                             "Please Fill All Every Blank");
                     myAlert.myDialog();
 
+                } else {
+                    //No Space
+                    MyConstant myConstant = new MyConstant();
+                    SynData synData = new SynData(MainActivity.this);
+                    synData.execute(myConstant.getUslJSON(),
+                            myConstant.getTestTitle(),
+                            myConstant.getTestMessage());
+
                 }
 
             }   //OnClick
@@ -59,5 +72,49 @@ public class MainActivity extends AppCompatActivity {
 
 
     }   // Main Method
+
+    private class SynData extends AsyncTask<String, Void, String> {
+
+        //Explicit
+        private Context context;
+        private String titleString, messageString;
+
+
+        public SynData(Context context) {
+            this.context = context;
+        }
+
+        @Override
+        protected String doInBackground(String... strings) {
+
+            try {
+
+                titleString = strings[1];
+                messageString = strings[2];
+
+                OkHttpClient okHttpClient = new OkHttpClient();
+                Request.Builder builder = new Request.Builder();
+                Request request = builder.url(strings[0]).build();
+                Response response = okHttpClient.newCall(request).execute();
+                return response.body().string();
+
+
+            } catch (Exception e) {
+                Log.d("24octV1", "e doInBack ==>" + e.toString());
+                return null;
+            }
+
+
+        }   //doInBlack
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            Log.d("24octV1", "JSON ==>" + s);
+
+    }   //OnPost
+
+    }   //SynData Class
+
 
 }   // Main Class   นี่คือ คลาสหลัก
