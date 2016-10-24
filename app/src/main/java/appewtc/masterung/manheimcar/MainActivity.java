@@ -23,6 +23,8 @@ import com.squareup.okhttp.Response;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.jar.Attributes;
+
 public class MainActivity extends AppCompatActivity {
 
     //Explicit
@@ -205,6 +207,13 @@ public class MainActivity extends AppCompatActivity {
                     //Password True
                     Toast.makeText(context, "Welcome", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(MainActivity.this, ListService.class);
+
+                    //Put Data to ListService
+                    intent.putExtra("Name", nameStrings);
+                    intent.putExtra("Image", imageStrings);
+                    intent.putExtra("Lat", latStrings);
+                    intent.putExtra("Lng", lngStrings);
+
                     startActivity(intent);
                     finish();
 
