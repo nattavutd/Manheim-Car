@@ -2,6 +2,7 @@ package appewtc.masterung.manheimcar;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -10,16 +11,30 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.google.android.gms.appindexing.Action;
+import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.appindexing.Thing;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 public class MainActivity extends AppCompatActivity {
 
     //Explicit
     private Button singInButton, singUpButton;
     private EditText userEditText, passwordEditText;
-    private String userString, passwordString;
+    private String userString, passwordString, truepasswordString;
+    private String[] nameStrings, imageStrings, latStrings, lngStrings;
+    private boolean aBoolean = true;
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    private GoogleApiClient client;
 
 
     @Override
@@ -71,7 +86,46 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }   // Main Method
+
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    public Action getIndexApiAction() {
+        Thing object = new Thing.Builder()
+                .setName("Main Page") // TODO: Define a title for the content shown.
+                // TODO: Make sure this auto-generated URL is correct.
+                .setUrl(Uri.parse("http://[ENTER-YOUR-URL-HERE]"))
+                .build();
+        return new Action.Builder(Action.TYPE_VIEW)
+                .setObject(object)
+                .setActionStatus(Action.STATUS_TYPE_COMPLETED)
+                .build();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client.connect();
+        AppIndex.AppIndexApi.start(client, getIndexApiAction());
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        AppIndex.AppIndexApi.end(client, getIndexApiAction());
+        client.disconnect();
+    }
 
     private class SynData extends AsyncTask<String, Void, String> {
 
@@ -112,7 +166,48 @@ public class MainActivity extends AppCompatActivity {
             super.onPostExecute(s);
             Log.d("24octV1", "JSON ==>" + s);
 
-    }   //OnPost
+            try {
+                JSONArray jsonArray = new JSONArray(s);
+
+                nameStrings = new String[jsonArray.length()];
+                imageStrings = new String[jsonArray.length()];
+                latStrings = new String[jsonArray.length()];
+                lngStrings = new String[jsonArray.length()];
+
+
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+
+                    //Check User
+                    if (userString.equals(jsonObject.getString("User"))) {
+
+                        aBoolean = false;
+                        truepasswordString = jsonObject.getString("Password");
+                    }   //if
+
+                    //Setup Array
+                    nameStrings[i] = jsonObject.getString("Name");
+                    imageStrings[i] = jsonObject.getString("Image");
+                    latStrings[i] = jsonObject.getString("Lat");
+                    lngStrings[i] = jsonObject.getString("Lng");
+
+
+                }   //For
+
+                if (aBoolean) {
+
+                    MyAlert myAlert = new MyAlert(context, R.drawable.bird48,
+                            titleString, messageString);
+                    myAlert.myDialog();
+
+                }
+
+            } catch (Exception e) {
+                Log.d("24octV2", "e ==>" + e.toString());
+
+            }
+
+        }   //OnPost
 
     }   //SynData Class
 
