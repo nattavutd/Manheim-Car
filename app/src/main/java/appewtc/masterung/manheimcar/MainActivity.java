@@ -194,6 +194,12 @@ public class MainActivity extends AppCompatActivity {
                     latStrings[i] = jsonObject.getString("Lat");
                     lngStrings[i] = jsonObject.getString("Lng");
 
+                    //Check
+                    Log.d("24octV4", "Name(" + i + ") ==> " + nameStrings[i]);
+                    Log.d("24octV4", "Image(" + i + ") ==> " + imageStrings[i]);
+                    Log.d("24octV4", "Lat(" + i + ") ==> " + latStrings[i]);
+                    Log.d("24octV4", "Lng(" + i + ") ==> " + lngStrings[i]);
+
 
                 }   //For
 
